@@ -1,0 +1,53 @@
+VERSION ""
+
+NS_ :
+
+BS_:
+
+BU_: BMS INVERTER DCDC VCU
+
+BO_ 256 BMS_Status: 8 BMS
+ SG_ BMS_PackVoltage : 0|16@1+ (0.1,0) [0|1000] "V" VCU
+ SG_ BMS_PackCurrent : 16|16@1- (0.1,0) [-3276.8|3276.7] "A" VCU
+ SG_ BMS_SOC : 32|8@1+ (0.5,0) [0|100] "%" VCU
+ SG_ BMS_State : 40|4@1+ (1,0) [0|15] "" VCU
+ SG_ BMS_AliveCounter : 44|4@1+ (1,0) [0|15] "" VCU
+ SG_ BMS_CRC : 56|8@1+ (1,0) [0|255] "" VCU
+
+BO_ 257 BMS_Temperatures: 8 BMS
+ SG_ BMS_CellTempMax : 0|8@1+ (1,-40) [-40|215] "degC" VCU
+ SG_ BMS_CellTempMin : 8|8@1+ (1,-40) [-40|215] "degC" VCU
+ SG_ BMS_CoolantTemp : 16|8@1+ (1,-40) [-40|215] "degC" VCU
+ SG_ BMS_TempAliveCounter : 44|4@1+ (1,0) [0|15] "" VCU
+ SG_ BMS_TempCRC : 56|8@1+ (1,0) [0|255] "" VCU
+
+BO_ 512 INV_Status: 8 INVERTER
+ SG_ INV_MotorSpeed : 0|16@1- (1,0) [-32768|32767] "rpm" VCU
+ SG_ INV_MotorTorque : 16|16@1- (0.1,0) [-3276.8|3276.7] "Nm" VCU
+ SG_ INV_IgbtTemp : 32|8@1+ (1,-40) [-40|215] "degC" VCU
+ SG_ INV_State : 40|4@1+ (1,0) [0|15] "" VCU
+ SG_ INV_AliveCounter : 44|4@1+ (1,0) [0|15] "" VCU
+ SG_ INV_CRC : 56|8@1+ (1,0) [0|255] "" VCU
+
+BO_ 768 DCDC_Status: 8 DCDC
+ SG_ DCDC_OutputVoltage : 0|16@1+ (0.01,0) [0|20] "V" VCU
+ SG_ DCDC_OutputCurrent : 16|16@1+ (0.1,0) [0|300] "A" VCU
+ SG_ DCDC_State : 40|4@1+ (1,0) [0|15] "" VCU
+ SG_ DCDC_AliveCounter : 44|4@1+ (1,0) [0|15] "" VCU
+ SG_ DCDC_CRC : 56|8@1+ (1,0) [0|255] "" VCU
+
+CM_ BO_ 256 "Battery pack status, 10 ms cycle";
+CM_ BO_ 257 "Battery temperatures, 100 ms cycle";
+CM_ BO_ 512 "Traction inverter status, 10 ms cycle";
+CM_ BO_ 768 "12 V DC-DC converter status, 20 ms cycle";
+
+BA_DEF_ BO_ "GenMsgCycleTime" INT 0 10000;
+BA_DEF_DEF_ "GenMsgCycleTime" 0;
+BA_ "GenMsgCycleTime" BO_ 256 10;
+BA_ "GenMsgCycleTime" BO_ 257 100;
+BA_ "GenMsgCycleTime" BO_ 512 10;
+BA_ "GenMsgCycleTime" BO_ 768 20;
+
+VAL_ 256 BMS_State 0 "Init" 1 "Standby" 2 "Precharge" 3 "Ready" 4 "Charging" 15 "Fault" ;
+VAL_ 512 INV_State 0 "Init" 1 "Standby" 2 "Torque" 3 "Speed" 15 "Fault" ;
+VAL_ 768 DCDC_State 0 "Off" 1 "Buck" 15 "Fault" ;
